@@ -48,4 +48,7 @@ public class Produit {
 	private List<Ligne> lignes = new LinkedList<>();
 
 
+	public int getUnitessEnStock() {
+		return unitesEnStock;
+	}
 }

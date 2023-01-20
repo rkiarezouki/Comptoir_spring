@@ -1,8 +1,12 @@
 package comptoirs.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+import comptoirs.entity.Ligne;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
+import comptoirs.entity.Produit;
 
 import comptoirs.dao.ClientRepository;
 import comptoirs.dao.CommandeRepository;
@@ -10,11 +14,12 @@ import comptoirs.entity.Commande;
 import jakarta.transaction.Transactional;
 
 @Service
+@Getter
 public class CommandeService {
     // La couche "Service" utilise la couche "Accès aux données" pour effectuer les traitements
     private final CommandeRepository commandeDao;
     private final ClientRepository clientDao;
-    
+
 
     // @Autowired
     // La couche "Service" utilise la couche "Accès aux données" pour effectuer les traitements
@@ -22,12 +27,14 @@ public class CommandeService {
         this.commandeDao = commandeDao;
         this.clientDao = clientDao;
     }
+
     /**
      * Service métier : Enregistre une nouvelle commande pour un client connu par sa clé
      * Règles métier :
      * - le client doit exister
      * - On initialise l'adresse de livraison avec l'adresse du client
      * - Si le client a déjà commandé plus de 100 articles, on lui offre une remise de 15%
+     *
      * @param clientCode la clé du client
      * @return la commande créée
      */
@@ -57,13 +64,23 @@ public class CommandeService {
      * - la commande ne doit pas être déjà envoyée (le champ 'envoyeele' doit être null)
      * - On met à jour la date d'expédition (envoyeele) avec la date du jour
      * - Pour chaque produit commandé, décrémente la quantité en stock (Produit.unitesEnStock)
-     *   de la quantité commandée
+     * de la quantité commandée
+     *
      * @param commandeNum la clé de la commande
      * @return la commande mise à jour
      */
     @Transactional
     public Commande enregistreExpédition(Integer commandeNum) {
-        // TODO : implémenter ce service métier
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        Commande c = commandeDao.findById(commandeNum).orElseThrow();
+        if (c.getEnvoyeele() == null) {
+            c.setEnvoyeele(LocalDate.now());
+            for (Ligne l :c.getLignes()){
+                var produit = l.getProduit();
+                produit.setUnitesEnStock(produit.getUnitessEnStock() - l.getQuantite());
+            }
+        } else {
+            throw new IllegalArgumentException("la command est déja envoyé");
+        }
+        return c;
     }
 }
