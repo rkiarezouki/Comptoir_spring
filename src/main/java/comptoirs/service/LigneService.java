@@ -49,7 +49,7 @@ public class LigneService {
         var commande = commandeDao.findById(commandeNum).orElseThrow();
         var stock = produit.getUnitessEnStock();
         var ligne = new Ligne();
-        if(commande.getEnvoyeele()== null && quantite > 0 stock>quantite){
+        if(commande.getEnvoyeele()== null && quantite > 0 && stock>quantite){
             ligne.setCommande(commande);
             ligne.setProduit(produit);
             ligne.setQuantite(quantite);
@@ -59,7 +59,8 @@ public class LigneService {
 
         }else{
 
-        throw new IllegalArgumentException("Cette méthode n'est pas implémentée");
+        throw new IllegalArgumentException("commande deja envoyé ou quantite négative ou quantite du stock n'est pas suffisante");
     }
+        return ligne;
 }
 }
