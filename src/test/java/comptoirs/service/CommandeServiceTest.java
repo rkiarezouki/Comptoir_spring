@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.time.LocalDate;
 
 import comptoirs.dao.*;
 import comptoirs.entity.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
  // Ce test est basé sur le jeu de données dans "test_data.sql"
@@ -19,6 +19,9 @@ class CommandeServiceTest {
     private static final String ID_GROS_CLIENT = "2COM";
     private static final String VILLE_PETIT_CLIENT = "Berlin";
     private static final BigDecimal REMISE_POUR_GROS_CLIENT = new BigDecimal("0.15");
+    private static final Integer ID_COMMANDE_NON_EXISTANTE = 10;
+    private static final Integer ID_COMMANDE_LIVREE = 9999;
+    private static final Integer ID_COMMANDE_PAS_LIVREE = 9999;
 
     @Autowired
     private CommandeService service;
@@ -56,5 +59,20 @@ class CommandeServiceTest {
 
         assertEquals(stockAvant-10, produit.getUnitesEnStock(), "on doit décrémenter le stock de 20 unités");
 
+    }
+    @Test
+    void commandeEnregistreeExiste(){
+        assertThrows(Exception.class, () -> service.enregistreExpédition(ID_COMMANDE_NON_EXISTANTE), "L'id n'existe pas");
+    }
+
+    @Test
+    void commandeEnvoyee(){
+        assertThrows(Exception.class, () -> service.enregistreExpédition(ID_COMMANDE_LIVREE),"la commande est enregistrée");
+    }
+
+    @Test
+    void miseAJourDateEnvoi(){
+        var commandeEnvoyee = service.enregistreExpédition(ID_COMMANDE_PAS_LIVREE);
+        assertEquals(LocalDate.now(), commandeEnvoyee.getEnvoyeele(),"La date d'envoie n'est pas celle du jour actuel");
     }
 }
