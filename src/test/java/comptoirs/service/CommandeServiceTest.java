@@ -57,7 +57,7 @@ class CommandeServiceTest {
         service.enregistreExpédition(99998);
         produit = produitDao.findById(98).orElseThrow();
 
-        assertEquals(stockAvant-10, produit.getUnitesEnStock(), "on doit décrémenter le stock de 20 unités");
+        assertEquals(stockAvant-20, produit.getUnitesEnStock(), "on doit décrémenter le stock de 20 unités");
 
     }
     @Test
