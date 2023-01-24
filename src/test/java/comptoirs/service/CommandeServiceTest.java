@@ -21,7 +21,7 @@ class CommandeServiceTest {
     private static final BigDecimal REMISE_POUR_GROS_CLIENT = new BigDecimal("0.15");
     private static final Integer ID_COMMANDE_NON_EXISTANTE = 10;
     private static final Integer ID_COMMANDE_LIVREE = 9999;
-    private static final Integer ID_COMMANDE_PAS_LIVREE = 9999;
+    private static final Integer ID_COMMANDE_PAS_LIVREE = 999998;
 
     @Autowired
     private CommandeService service;
