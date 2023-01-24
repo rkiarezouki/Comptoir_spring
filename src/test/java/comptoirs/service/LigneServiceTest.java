@@ -35,7 +35,7 @@ class LigneServiceTest {
     @Test
     void laQuantiteEstPositive() {
         assertThrows(ConstraintViolationException.class, 
-            () -> service.ajouterLigne(NUMERO_COMMANDE_PAS_LIVREE, REFERENCE_PRODUIT_DISPONIBLE_1, 0),
+            () -> service.ajouterLigne(NUMERO_COMMANDE_PAS_LIVREE, REFERENCE_PRODUIT_DISPONIBLE_1, 1),
             "La quantite d'une ligne doit être positive");
     }
 
